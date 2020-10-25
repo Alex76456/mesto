@@ -14,6 +14,8 @@ const closeButton = popup.querySelector('.popup__close');
 
 function showPopup() {
   popup.classList.add('popup_opened');
+  nameInput.value = name.textContent;
+  jobInput.value = job.textContent;
 }
 
 
@@ -25,10 +27,7 @@ function closePopup() {
 editButton.addEventListener('click', showPopup);
 closeButton.addEventListener('click', closePopup);
 
-/* Пока не знаю как сделать, чтобы инпуты были заполнены
-nameInput.textContent = name.content;
-jobInput.textContent = job;
-*/
+
 function submitForm(event) {
   event.preventDefault();
 
