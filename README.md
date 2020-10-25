@@ -6,7 +6,7 @@
 
 **Ссылка на проект:**
 
-https://alex76456.github.io/mesto
+https://alex76456.github.io/mesto/
 
 
 **Figma**
