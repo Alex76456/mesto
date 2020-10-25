@@ -1,14 +1,121 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Mesto</title>
+  <link rel="stylesheet" href="./pages/index.css">
 </head>
 
-<body>
+<body class="root">
+  <div class="page">
+    <header class="header">
+      <img class="logo" src="./images/logo.png" alt="Место-логотип">
+    </header>
 
+    <main>
+      <section class="profile">
+        <img class="profile__avatar" src="./images/profile__avatar.jpg" alt="Жак Кусто" />
+        <div class="profile__info">
+
+          <h1 class="profile__title">
+            Жак-Ив Кустоjjjjjjjjjjjjjjjjjj
+          </h1>
+
+          <button class="profile__edit-button" type="button"></button>
+
+          <p class="profile__subtitle">
+            Исследователь океана
+          </p>
+        </div>
+        <button class="profile__add-button" type="button"></button>
+      </section>
+
+      <section class="elements">
+        <ul class="elements__list">
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/tower.jpg " alt="Башня ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Карачаевск
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/ravnina.jpg " alt="равнина ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Гора Эльбрус
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/gora.jpg " alt="гора ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Домбай
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/ravnina.jpg " alt="равнина ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Гора Эльбрус
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/gora.jpg " alt="гора ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Домбай
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+
+          <li class="elements__list-item">
+            <img class="elements__image" src="./images/tower.jpg " alt="Башня ">
+            <div class="elements__caption-space">
+              <h2 class="elements__caption">
+                Карачаево-Чeркеск
+              </h2>
+              <button class="elements__caption-like" type="button"></button>
+            </div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p class="footer__copyright">© 2020 Mesto Russia</p>
+    </footer>
+  </div>
+  <div class="popup">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h2 class="pupup__title">
+        Редактировать профиль
+      </h2>
+      <form class="popup__form">
+        <input class="popup__input popup__input_type_name" type="text">
+        <input class="popup__input popup__input_type_job" type="text">
+        <button class="popup__submit" type="submit">Сохранить</button>
+      </form>
+
+    </div>
+  </div>
+  <script src="./scripts/index.js"></script>
 </body>
 
 </html>
