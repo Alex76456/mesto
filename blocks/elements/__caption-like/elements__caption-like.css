@@ -1,6 +1,7 @@
 .elements__caption-like {
   background-image: url('../../../images/hearth.svg');
   background-position: center;
+  background-color: white;
   cursor: pointer;
   width: 20.76px;
   height: 18.13px;
