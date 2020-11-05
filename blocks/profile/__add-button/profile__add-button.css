@@ -6,9 +6,9 @@
   height: 50px;
   cursor: pointer;
   background-color: black;
-  background-position: center;
   outline: 2px solid white;
   margin-left: auto;
+  border: none;
 }
 
 .profile__add-button:hover {
