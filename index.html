@@ -41,7 +41,7 @@
   </div>
   <div class="popup popup_type_edit">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close popup__close_place_edit"></button>
       <h2 class="popup__title">
         Редактировать профиль
       </h2>
@@ -54,7 +54,7 @@
   </div>
 
   <div class="popup popup_type_add">
-    <div class="popup__content">
+    <div class="popup__content popup__content_size_shorty">
       <button type="button" class="popup__close"></button>
       <h2 class="popup__title">
         Новое место
@@ -65,8 +65,17 @@
         <button class="popup__submit" type="submit">Сохранить</button>
       </form>
     </div>
+  </div>
 
-    <template id="element-template">
+  <div class="popup popup_type_image">
+    <figure class="popup__image-container">
+      <button type="button" class="popup__close"></button>
+      <img class="popup__image" src="" alt="">
+      <figcaption class="popup__image-caption"></figcaption>
+    </figure>
+  </div>
+
+  <template id="element-template">
     <li class="elements__list-item">
       <button class="elements__delete-button"></button>
       <img class="elements__image" src="" alt="">
@@ -77,7 +86,7 @@
       </div>
     </li>
   </template>
-    <script src="./scripts/index.js"></script>
+  <script src="./scripts/index.js"></script>
 </body>
 
 </html>

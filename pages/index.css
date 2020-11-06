@@ -25,11 +25,16 @@
 @import url('../blocks/popup/popup.css');
 @import url('../blocks/popup/_opened/popup_opened.css');
 @import url('../blocks/popup/__content/popup__content.css');
+@import url('../blocks/popup/__content/_size_shorty/popup__content_size_shorty.css');
 @import url('../blocks/popup/__close/popup__close.css');
+@import url('../blocks/popup/__close/_place_edit/popup__close_place_edit.css');
 @import url('../blocks/popup/__title/popup__title.css');
 @import url('../blocks/popup/__form/popup__form.css');
 @import url('../blocks/popup/__input/popup__input.css');
 @import url('../blocks/popup/__submit/popup__submit.css');
+@import url('../blocks/popup/__image-container/popup__image-container.css');
+@import url('../blocks/popup/__image/popup__image.css');
+@import url('../blocks/popup/__image-caption/popup__image-caption.css');
 
 /*
 @import url('../blocks');
@@ -44,4 +49,5 @@
 /*
 * {
   outline: 1px solid red;
-}*/
+}
+*/

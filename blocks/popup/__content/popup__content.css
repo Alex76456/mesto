@@ -11,10 +11,5 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-}
-
-@media (max-width: 767px) {
-  .popup__content {
-    margin: 123px 19px;
-  }
+  margin: 123px 19px;
 }

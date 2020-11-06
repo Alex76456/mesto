@@ -24,27 +24,37 @@ const initialCards = [{
   }
 ];
 
-
+const elementsContainer = document.querySelector('.elements__list')
 
 const popupEdit = document.querySelector('.popup_type_edit');
 const formEdit = popupEdit.querySelector('.popup__form');
 const popupAdd = document.querySelector('.popup_type_add');
 const formAdd = popupAdd.querySelector('.popup__form');
+const popupImage = document.querySelector('.popup_type_image');
 
 const name = document.querySelector('.profile__title');
 const job = document.querySelector('.profile__subtitle');
 
+
 const nameInput = popupEdit.querySelector('.popup__input_type_name');
 const jobInput = popupEdit.querySelector('.popup__input_type_job');
+
 const placeInput = popupAdd.querySelector('.popup__input_type_place');
 const linkInput = popupAdd.querySelector('.popup__input_type_link');
 
+const placeImage = popupImage.querySelector('.popup__image');
+const captionImage = popupImage.querySelector('.popup__image-caption');
+
+
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
+
+
 const closeEditButton = popupEdit.querySelector('.popup__close');
 const closeAddButton = popupAdd.querySelector('.popup__close');
+const closeImageButton = popupImage.querySelector('.popup__close');
 
-const elementsContainer = document.querySelector('.elements__list')
+
 
 
 
@@ -114,14 +124,39 @@ function removeElement(event) {
   }
 }
 
+
+function showImagePopup() {
+  popupImage.classList.toggle('popup_opened');
+}
+
+
+function choiseImagePopup(event) {
+  if (event.target.classList.contains('elements__image')) {
+
+    let srcPlace = event.target.parentElement.querySelector('.elements__image').src;
+    let altPlace = event.target.parentElement.querySelector('.elements__image').alt;
+    let captionPlace = event.target.parentElement.querySelector('.elements__caption').textContent;
+
+    placeImage.src = srcPlace;
+    placeImage.alt = altPlace;
+    captionImage.textContent = captionPlace;
+
+    showImagePopup()
+  }
+}
+
+
 formEdit.addEventListener('submit', submitEditForm);
 formAdd.addEventListener('submit', submitAddForm);
 
 editButton.addEventListener('click', showEditPopup);
 addButton.addEventListener('click', showAddPopup);
+elementsContainer.addEventListener('click', choiseImagePopup);
 
 closeEditButton.addEventListener('click', showEditPopup);
 closeAddButton.addEventListener('click', showAddPopup);
+closeImageButton.addEventListener('click', showImagePopup);
+
 
 elementsContainer.addEventListener('click', showLike);
 elementsContainer.addEventListener('click', removeElement);
