@@ -30,65 +30,7 @@
 
       <section class="elements">
         <ul class="elements__list">
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/tower.jpg " alt="Башня ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Карачаевск
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
 
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/ravnina.jpg " alt="равнина ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Гора Эльбрус
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
-
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/gora.jpg " alt="гора ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Домбай
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
-
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/ravnina.jpg " alt="равнина ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Гора Эльбрус
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
-
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/gora.jpg " alt="гора ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Домбай
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
-
-          <li class="elements__list-item">
-            <img class="elements__image" src="./images/tower.jpg " alt="Башня ">
-            <div class="elements__caption-space">
-              <h2 class="elements__caption">
-                Карачаево-Чeркеск
-              </h2>
-              <button class="elements__caption-like" type="button"></button>
-            </div>
-          </li>
         </ul>
       </section>
     </main>
@@ -97,9 +39,9 @@
       <p class="footer__copyright">© 2020 Mesto Russia</p>
     </footer>
   </div>
-  <div class="popup">
+  <div class="popup popup_type_edit">
     <div class="popup__content">
-      <button type="button" class="popup__close"></button>
+      <button type="button" class="popup__close popup__close_place_edit"></button>
       <h2 class="popup__title">
         Редактировать профиль
       </h2>
@@ -108,9 +50,42 @@
         <input class="popup__input popup__input_type_job" type="text" name="subtitle">
         <button class="popup__submit" type="submit">Сохранить</button>
       </form>
-
     </div>
   </div>
+
+  <div class="popup popup_type_add">
+    <div class="popup__content popup__content_size_shorty">
+      <button type="button" class="popup__close"></button>
+      <h2 class="popup__title">
+        Новое место
+      </h2>
+      <form class="popup__form" name="popup-form">
+        <input class="popup__input popup__input_type_place" type="text" name="place" placeholder="Название">
+        <input class="popup__input popup__input_type_link" type="text" name="link" placeholder="Ссылка на картинку">
+        <button class="popup__submit" type="submit">Сохранить</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="popup popup_type_image">
+    <figure class="popup__image-container">
+      <button type="button" class="popup__close"></button>
+      <img class="popup__image" src="#" alt="слово">
+      <figcaption class="popup__image-caption"></figcaption>
+    </figure>
+  </div>
+
+  <template id="element-template">
+    <li class="elements__list-item">
+      <button class="elements__delete-button"></button>
+      <img class="elements__image" src="" alt="">
+      <div class="elements__caption-space">
+        <h2 class="elements__caption">
+        </h2>
+        <button class="elements__caption-like" type="button"></button>
+      </div>
+    </li>
+  </template>
   <script src="./scripts/index.js"></script>
 </body>
 
