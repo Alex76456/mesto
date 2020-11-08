@@ -50,26 +50,35 @@ const captionImage = popupImage.querySelector('.popup__image-caption');
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
+
+const elementTemplate = document.querySelector('#element-template').content;
 let placeElement
 
-function createElement(placeValue, linkValue) {
-  const elementTemplate = document.querySelector('#element-template').content;
-  let placeElement = elementTemplate.cloneNode(true);
 
-  placeElement.querySelector('.elements__caption').textContent = placeValue;
-  placeElement.querySelector('.elements__image').src = linkValue;
-  placeElement.querySelector('.elements__image').alt = placeValue;
+function createElement(placeValue, linkValue) {
+  placeElement = elementTemplate.cloneNode(true);
+
+  const placeElementImage = placeElement.querySelector('.elements__image');
+  const placeElementCaption = placeElement.querySelector('.elements__caption');
+
+  placeElementImage.src = linkValue;
+  placeElementImage.alt = placeValue;
+  placeElementCaption.textContent = placeValue;
   return placeElement
 }
 
-function addPrependElement() {
-  elementsContainer.prepend(createElement(placeInput.value, linkInput.value));
+function addPrepend(x) {
+  elementsContainer.prepend(x);
+}
+
+function addNewElement() {
+  addPrepend(createElement(placeInput.value, linkInput.value));
 }
 
 
 function renderElements() {
   for (let i = 0; i < initialCards.length; i++) {
-    elementsContainer.prepend(createElement(initialCards[i].name, initialCards[i].link));
+    addPrepend(createElement(initialCards[i].name, initialCards[i].link));
   }
 }
 
@@ -92,24 +101,24 @@ const closePopup = (event) => {
 function choiseImagePopup(event) {
   if (event.target.classList.contains('elements__image')) {
 
-    const Place = event.target.parentElement.querySelector('.elements__image');
-    const captionPlace = event.target.parentElement.querySelector('.elements__caption');
+    const chosenImage = event.target.parentElement.querySelector('.elements__image');
+    const chosenCaption = event.target.parentElement.querySelector('.elements__caption');
 
-    placeImage.src = Place.src;
-    placeImage.alt = Place.alt;
-    captionImage.textContent = captionPlace.textContent;
+    placeImage.src = chosenImage.src;
+    placeImage.alt = chosenImage.alt;
+    captionImage.textContent = chosenCaption.textContent;
 
     showPopup(popupImage)
   }
 }
 
-function EditPopup() {
+function editPopup() {
   nameInput.value = name.textContent;
   jobInput.value = job.textContent;
   showPopup(popupEdit);
 }
 
-function AddPopup() {
+function addPopup() {
   placeInput.value = '';
   linkInput.value = '';
   showPopup(popupAdd);
@@ -128,7 +137,7 @@ function submitEditForm(event) {
 function submitAddForm(event) {
   event.preventDefault();
 
-  addPrependElement();
+  addNewElement();
 
   showPopup(popupAdd);
 }
@@ -149,8 +158,8 @@ const removeElement = (event) => {
 formEdit.addEventListener('submit', submitEditForm);
 formAdd.addEventListener('submit', submitAddForm);
 
-editButton.addEventListener('click', EditPopup);
-addButton.addEventListener('click', AddPopup);
+editButton.addEventListener('click', editPopup);
+addButton.addEventListener('click', addPopup);
 elementsContainer.addEventListener('click', choiseImagePopup);
 
 document.addEventListener('click', closePopup);
