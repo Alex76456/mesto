@@ -52,11 +52,9 @@ const addButton = document.querySelector('.profile__add-button');
 
 
 const elementTemplate = document.querySelector('#element-template').content;
-let placeElement
-
 
 function createElement(placeValue, linkValue) {
-  placeElement = elementTemplate.cloneNode(true);
+ let placeElement = elementTemplate.cloneNode(true);
 
   const placeElementImage = placeElement.querySelector('.elements__image');
   const placeElementCaption = placeElement.querySelector('.elements__caption');
