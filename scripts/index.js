@@ -54,7 +54,7 @@ const addButton = document.querySelector('.profile__add-button');
 const elementTemplate = document.querySelector('#element-template').content;
 
 function createElement(placeValue, linkValue) {
- let placeElement = elementTemplate.cloneNode(true);
+  let placeElement = elementTemplate.cloneNode(true);
 
   const placeElementImage = placeElement.querySelector('.elements__image');
   const placeElementCaption = placeElement.querySelector('.elements__caption');
@@ -89,9 +89,18 @@ const showPopup = (popup) => {
 }
 
 const closePopup = (event) => {
-  if (event.target.classList.contains('popup__close')) {
-    const parentPopup = event.target.closest('.popup');
-    showPopup(parentPopup);
+  if (event.target.classList.contains('popup__close') || event.target.classList.contains('popup')) {
+    /*const parentPopup = event.target.closest('.popup');
+    showPopup(parentPopup);*/
+    const currentPopup = document.querySelector('.popup_opened');
+    showPopup(currentPopup);
+  }
+}
+
+const hotKeys = (event) => {
+  if (event.keyCode === 27) {
+    const currentPopup = document.querySelector('.popup_opened');
+    showPopup(currentPopup);
   }
 }
 
@@ -124,19 +133,15 @@ function addPopup() {
 
 function submitEditForm(event) {
   event.preventDefault();
-
   name.textContent = nameInput.value;
   job.textContent = jobInput.value;
-
   showPopup(popupEdit);
 }
 
 
 function submitAddForm(event) {
   event.preventDefault();
-
   addNewElement();
-
   showPopup(popupAdd);
 }
 
@@ -161,6 +166,7 @@ addButton.addEventListener('click', addPopup);
 elementsContainer.addEventListener('click', choiseImagePopup);
 
 document.addEventListener('click', closePopup);
+document.addEventListener('keydown', hotKeys);
 
 elementsContainer.addEventListener('click', showLike);
 elementsContainer.addEventListener('click', removeElement);
