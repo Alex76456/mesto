@@ -55,7 +55,7 @@ const elementTemplate = document.querySelector('#element-template').content;
 
 
 
-//ФУНКЦИИ: ----------------------------------------------------------------------------------------------------------
+//ФУНКЦИИ: ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 //СОЗДАЕМ КАРТОЧКИ: ------------
 
@@ -89,23 +89,7 @@ function renderElements() {
 
 
 
-
-
-
-
-const showPopup = (popup) => {
-  popup.classList.toggle('popup_opened');
-}
-
-
-const closeCurrentPopup = () => {
-  const currentPopup = document.querySelector('.popup_opened');
-  showPopup(currentPopup);
-}
-
-
-
-//ДЕЛАТЬ ЭЛЕМЕНТЫ ПО ДЕФОЛТУ: ----------------------------------------------------------
+//СДЕЛАТЬ ЭЛЕМЕНТЫ ПО ДЕФОЛТУ: ----------------------------------------------------------
 
 const setDefaultButton = () => {
   const currentPopup = document.querySelector('.popup_opened');
@@ -138,35 +122,52 @@ const setDefaultInputs = () => {
     }
   });
 };
+
 //-----------------------------------------------------------------------------------------------
 
 
 
 
 
-const closePopupFromButton = (event) => {
-  if (event.target.classList.contains('popup__close') || event.target.classList.contains('popup')) {
+
+//ЗАКРЫТЬ ПОПАП: -----------------------------------------------------------
+
+const closeCurrentPopup = () => {
+  const currentPopup = document.querySelector('.popup_opened');
+
+  if (currentPopup.querySelector('.popup__submit')) {
     setDefaultInputs();
     setDefaultErrors();
     setDefaultButton();
+    showPopup(currentPopup);
+  } else {
+    showPopup(currentPopup);
+  }
+}
+
+
+const closePopupFromButton = (event) => {
+  if (event.target.classList.contains('popup__close') || event.target.classList.contains('popup')) {
     closeCurrentPopup();
   }
 }
 
 const hotKeys = (event) => {
   if (event.keyCode === 27) {
-    setDefaultInputs();
-    setDefaultErrors();
-    setDefaultButton();
     closeCurrentPopup();
   }
 }
 
+//--------------------------------------------------------------
 
 
 
 
 //ОТКРЫТЬ ПОПАП: -----------------------------------------------------------------
+
+const showPopup = (popup) => {
+  popup.classList.toggle('popup_opened');
+}
 
 
 function openEditPopup() {
@@ -193,23 +194,25 @@ function openImagePopup(event) {
     captionImage.textContent = chosenCaption.textContent;
 
     showPopup(popupImage)
-  }
-}
-
-
+  };
+};
 // ------------------------------------------------------------------------------------------------------
 
+
+
+//ЛАЙКИ И УДАЛЕНИЕ КАРТОЧЕК:------------
 const showLike = (event) => {
   if (event.target.classList.contains('elements__caption-like'))
     event.target.classList.toggle('elements__caption-like_color_black');
 }
 
 const removeElement = (event) => {
-  if (event.target.classList.contains('elements__delete-button')) {
-    let element = event.target.parentElement;
-    element.remove();
+    if (event.target.classList.contains('elements__delete-button')) {
+      let element = event.target.parentElement;
+      element.remove();
+    }
   }
-}
+  //--------
 
 
 
@@ -232,8 +235,6 @@ function submitAddForm(event) {
   showPopup(popupAdd);
 }
 // -----------------------------------------------------------
-
-
 
 
 //СЛУШАТЕЛИ:
