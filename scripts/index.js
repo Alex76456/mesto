@@ -53,8 +53,14 @@ const addButton = document.querySelector('.profile__add-button');
 
 const elementTemplate = document.querySelector('#element-template').content;
 
+
+
+//ФУНКЦИИ: ----------------------------------------------------------------------------------------------------------
+
+//СОЗДАЕМ КАРТОЧКИ: ------------
+
 function createElement(placeValue, linkValue) {
- let placeElement = elementTemplate.cloneNode(true);
+  let placeElement = elementTemplate.cloneNode(true);
 
   const placeElementImage = placeElement.querySelector('.elements__image');
   const placeElementCaption = placeElement.querySelector('.elements__caption');
@@ -79,8 +85,11 @@ function renderElements() {
     addPrepend(createElement(initialCards[i].name, initialCards[i].link));
   }
 }
+//----------------------------------------------------------------------------------------
 
-renderElements()
+
+
+
 
 
 
@@ -88,15 +97,92 @@ const showPopup = (popup) => {
   popup.classList.toggle('popup_opened');
 }
 
-const closePopup = (event) => {
-  if (event.target.classList.contains('popup__close')) {
-    const parentPopup = event.target.closest('.popup');
-    showPopup(parentPopup);
+
+const closeCurrentPopup = () => {
+  const currentPopup = document.querySelector('.popup_opened');
+  showPopup(currentPopup);
+}
+
+
+
+//ДЕЛАТЬ ЭЛЕМЕНТЫ ПО ДЕФОЛТУ: ----------------------------------------------------------
+
+const setDefaultButton = () => {
+  const currentPopup = document.querySelector('.popup_opened');
+  const currentSubmitButton = currentPopup.querySelector('.popup__submit');
+
+  if (!currentSubmitButton.classList.contains('popup__submit_disabled')) {
+    currentSubmitButton.classList.add('popup__submit_disabled');
+    currentSubmitButton.disabled = true;
+  }
+};
+
+const setDefaultErrors = () => {
+  const currentPopup = document.querySelector('.popup_opened');
+  const currentErrors = Array.from(currentPopup.querySelectorAll('.popup__input-error'));
+
+  currentErrors.forEach(error => {
+    if (error.classList.contains('popup__input-error_visible')) {
+      error.classList.remove('popup__input-error_visible');
+    }
+  });
+};
+
+const setDefaultInputs = () => {
+  const currentPopup = document.querySelector('.popup_opened');
+  const currentInputs = Array.from(currentPopup.querySelectorAll('.popup__input'));
+
+  currentInputs.forEach(input => {
+    if (input.classList.contains('popup__input_type_error')) {
+      input.classList.remove('popup__input_type_error');
+    }
+  });
+};
+//-----------------------------------------------------------------------------------------------
+
+
+
+
+
+const closePopupFromButton = (event) => {
+  if (event.target.classList.contains('popup__close') || event.target.classList.contains('popup')) {
+    setDefaultInputs();
+    setDefaultErrors();
+    setDefaultButton();
+    closeCurrentPopup();
+  }
+}
+
+const hotKeys = (event) => {
+  if (event.keyCode === 27) {
+    setDefaultInputs();
+    setDefaultErrors();
+    setDefaultButton();
+    closeCurrentPopup();
   }
 }
 
 
-function choiseImagePopup(event) {
+
+
+
+//ОТКРЫТЬ ПОПАП: -----------------------------------------------------------------
+
+
+function openEditPopup() {
+  nameInput.value = name.textContent;
+  jobInput.value = job.textContent;
+  showPopup(popupEdit);
+}
+
+function openAddPopup() {
+  placeInput.value = '';
+  linkInput.value = '';
+  showPopup(popupAdd);
+}
+
+
+function openImagePopup(event) {
   if (event.target.classList.contains('elements__image')) {
 
     const chosenImage = event.target.parentElement.querySelector('.elements__image');
@@ -110,35 +196,8 @@ function choiseImagePopup(event) {
   }
 }
 
-function editPopup() {
-  nameInput.value = name.textContent;
-  jobInput.value = job.textContent;
-  showPopup(popupEdit);
-}
 
-function addPopup() {
-  placeInput.value = '';
-  linkInput.value = '';
-  showPopup(popupAdd);
-}
-
-function submitEditForm(event) {
-  event.preventDefault();
-
-  name.textContent = nameInput.value;
-  job.textContent = jobInput.value;
-
-  showPopup(popupEdit);
-}
-
-
-function submitAddForm(event) {
-  event.preventDefault();
-
-  addNewElement();
-
-  showPopup(popupAdd);
-}
+// ------------------------------------------------------------------------------------------------------
 
 const showLike = (event) => {
   if (event.target.classList.contains('elements__caption-like'))
@@ -153,14 +212,47 @@ const removeElement = (event) => {
 }
 
 
+
+//SUBMITы ФОРМ: ----------------------------------------------------------------
+
+
+function submitEditForm(event) {
+  event.preventDefault();
+  name.textContent = nameInput.value;
+  job.textContent = jobInput.value;
+  setDefaultButton();
+  showPopup(popupEdit);
+}
+
+
+function submitAddForm(event) {
+  event.preventDefault();
+  addNewElement();
+  setDefaultButton();
+  showPopup(popupAdd);
+}
+// -----------------------------------------------------------
+
+
+
+
+//СЛУШАТЕЛИ:
+
+
 formEdit.addEventListener('submit', submitEditForm);
 formAdd.addEventListener('submit', submitAddForm);
 
-editButton.addEventListener('click', editPopup);
-addButton.addEventListener('click', addPopup);
-elementsContainer.addEventListener('click', choiseImagePopup);
+editButton.addEventListener('click', openEditPopup);
+addButton.addEventListener('click', openAddPopup);
+elementsContainer.addEventListener('click', openImagePopup);
 
-document.addEventListener('click', closePopup);
+document.addEventListener('click', closePopupFromButton);
+document.addEventListener('keydown', hotKeys);
 
 elementsContainer.addEventListener('click', showLike);
 elementsContainer.addEventListener('click', removeElement);
+
+
+//ВЫПОЛНЯЕТСЯ:
+
+renderElements()
