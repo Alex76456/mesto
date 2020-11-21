@@ -4,6 +4,7 @@
   color: #FF0000;
   visibility: hidden;
   /*text-overflow: ellipsis;
-  white-space: nowrap;*/
-  overflow: hidden;
+  white-space: nowrap;
+  /*overflow: hidden;*/
+  height: 25px;
 }
