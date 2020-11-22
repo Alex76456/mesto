@@ -1,3 +1,5 @@
+//ПОКАЗАТЬ ИЛИ СКРЫТЬ ОШИБКИ В ЗАВИСИМОСТИ ОТ ВАЛИДНОСТИ ФОРМЫ: -----------------------------------------------------------
+
 const showInputError = (formElement, inputElement, errorMessage, config) => {
   const errorElement = formElement.querySelector(`#${inputElement.id}-error`);
   inputElement.classList.add(config.inputErrorClass);
@@ -12,13 +14,19 @@ const hideInputError = (formElement, inputElement, config) => {
   errorElement.textContent = '';
 };
 
+
 const checkInputValidity = (formElement, inputElement, config) => {
-  if (!inputElement.validity.valid) {
-    showInputError(formElement, inputElement, inputElement.validationMessage, config);
-  } else {
+  if (inputElement.validity.valid) {
     hideInputError(formElement, inputElement, config);
+  } else {
+    showInputError(formElement, inputElement, inputElement.validationMessage, config);
   }
 };
+
+// -----------------------------------------------
+
+
+//ПЕРЕКЛЮЧАТЕЛЬ АКТИВНОСТИ КНОПКИ САБМИТА В ЗАВИСИМОСТИ НАЛИЧИЯ ХЯТЯБЫ ОДНОГО НЕВАЛИДНОГО ИНПУТА: -------------
 
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
@@ -36,6 +44,10 @@ const toggleButtonState = (inputList, buttonElement, config) => {
   }
 };
 
+//-----------------------------------------------------------
+
+
+//ФУНКЦИИ УСТАНОВКИ СЛУШАТЕЛЕЙ НА ДОКУМЕНТ ЗАТЕМ И НА ФОРМЫ: -----------------------------
 
 const setEventListeners = (formElement, config) => {
   const inputList = Array.from(formElement.querySelectorAll(config.inputSelector));
@@ -66,6 +78,12 @@ const enableValidation = (config) => {
   });
 };
 
+// ----------------------------------------------
+
+
+//УСТАНАВЛИВАЕМ КОНФИГ:---------------------------------------------------
+//(ЭТО МОЖНО ПЕРЕНЕСТИ В index.js)
+
 const validationPopupsConfig = {
   formSelector: '.popup__form',
   inputSelector: '.popup__input',
@@ -75,5 +93,9 @@ const validationPopupsConfig = {
   inputErrorClass: 'popup__input_type_error',
   errorClass: 'popup__input-error_visible'
 };
+
+
+//ВЫПОЛНЯЕТСЯ:
+//(ЭТО МОЖНО ПЕРЕНЕСТИ В index.js)
 
 enableValidation(validationPopupsConfig);

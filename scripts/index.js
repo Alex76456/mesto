@@ -24,7 +24,7 @@ const initialCards = [{
   }
 ];
 
-const elementsContainer = document.querySelector('.elements__list')
+const elementsContainer = document.querySelector('.elements__list');
 
 
 const popupEdit = document.querySelector('.popup_type_edit');
@@ -60,7 +60,7 @@ const elementTemplate = document.querySelector('#element-template').content;
 //СОЗДАЕМ КАРТОЧКИ: ------------
 
 function createElement(placeValue, linkValue) {
-  let placeElement = elementTemplate.cloneNode(true);
+  const placeElement = elementTemplate.cloneNode(true);
 
   const placeElementImage = placeElement.querySelector('.elements__image');
   const placeElementCaption = placeElement.querySelector('.elements__caption');
@@ -68,7 +68,7 @@ function createElement(placeValue, linkValue) {
   placeElementImage.src = linkValue;
   placeElementImage.alt = placeValue;
   placeElementCaption.textContent = placeValue;
-  return placeElement
+  return placeElement;
 }
 
 function addPrepend(x) {
@@ -129,8 +129,23 @@ const setDefaultInputs = () => {
 
 
 
-
 //ЗАКРЫТЬ ПОПАП: -----------------------------------------------------------
+
+const setHotKeyEsc = (event) => {
+  if (event.key === "Escape") {
+    closeCurrentPopup();
+  }
+};
+
+
+const setToggleEventListenerEsc = () => {
+  if (!document.removeEventListener('keydown', setHotKeyEsc)) {
+    document.addEventListener('keydown', setHotKeyEsc);
+  } else {
+    document.removeEventListener('keydown', setHotKeyEsc);
+  }
+};
+
 
 const closeCurrentPopup = () => {
   const currentPopup = document.querySelector('.popup_opened');
@@ -139,24 +154,19 @@ const closeCurrentPopup = () => {
     setDefaultInputs();
     setDefaultErrors();
     setDefaultButton();
-    showPopup(currentPopup);
-  } else {
-    showPopup(currentPopup);
   }
-}
+  toggleShowPopup(currentPopup);
+  setToggleEventListenerEsc();
+};
 
 
 const closePopupFromButton = (event) => {
   if (event.target.classList.contains('popup__close') || event.target.classList.contains('popup')) {
     closeCurrentPopup();
   }
-}
+};
 
-const hotKeys = (event) => {
-  if (event.keyCode === 27) {
-    closeCurrentPopup();
-  }
-}
+
 
 //--------------------------------------------------------------
 
@@ -165,21 +175,23 @@ const hotKeys = (event) => {
 
 //ОТКРЫТЬ ПОПАП: -----------------------------------------------------------------
 
-const showPopup = (popup) => {
+const toggleShowPopup = (popup) => {
   popup.classList.toggle('popup_opened');
-}
+};
 
 
 function openEditPopup() {
   nameInput.value = name.textContent;
   jobInput.value = job.textContent;
-  showPopup(popupEdit);
+  toggleShowPopup(popupEdit);
+  setToggleEventListenerEsc();
 }
 
 function openAddPopup() {
   placeInput.value = '';
   linkInput.value = '';
-  showPopup(popupAdd);
+  toggleShowPopup(popupAdd);
+  setToggleEventListenerEsc();
 }
 
 
@@ -193,26 +205,28 @@ function openImagePopup(event) {
     placeImage.alt = chosenImage.alt;
     captionImage.textContent = chosenCaption.textContent;
 
-    showPopup(popupImage)
-  };
-};
+    toggleShowPopup(popupImage);
+    setToggleEventListenerEsc();
+  }
+}
 // ------------------------------------------------------------------------------------------------------
 
 
 
 //ЛАЙКИ И УДАЛЕНИЕ КАРТОЧЕК:------------
-const showLike = (event) => {
+const toggleShowLike = (event) => {
   if (event.target.classList.contains('elements__caption-like'))
     event.target.classList.toggle('elements__caption-like_color_black');
-}
+};
 
 const removeElement = (event) => {
-    if (event.target.classList.contains('elements__delete-button')) {
-      let element = event.target.parentElement;
-      element.remove();
-    }
+  if (event.target.classList.contains('elements__delete-button')) {
+    const element = event.target.parentElement;
+    element.remove();
   }
-  //--------
+};
+
+//---------------
 
 
 
@@ -224,7 +238,7 @@ function submitEditForm(event) {
   name.textContent = nameInput.value;
   job.textContent = jobInput.value;
   setDefaultButton();
-  showPopup(popupEdit);
+  toggleShowPopup(popupEdit);
 }
 
 
@@ -232,7 +246,7 @@ function submitAddForm(event) {
   event.preventDefault();
   addNewElement();
   setDefaultButton();
-  showPopup(popupAdd);
+  toggleShowPopup(popupAdd);
 }
 // -----------------------------------------------------------
 
@@ -248,12 +262,11 @@ addButton.addEventListener('click', openAddPopup);
 elementsContainer.addEventListener('click', openImagePopup);
 
 document.addEventListener('click', closePopupFromButton);
-document.addEventListener('keydown', hotKeys);
 
-elementsContainer.addEventListener('click', showLike);
+elementsContainer.addEventListener('click', toggleShowLike);
 elementsContainer.addEventListener('click', removeElement);
 
 
 //ВЫПОЛНЯЕТСЯ:
 
-renderElements()
+renderElements();
