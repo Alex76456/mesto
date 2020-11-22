@@ -24,6 +24,22 @@ const initialCards = [{
   }
 ];
 
+//УСТАНАВЛИВАЕМ КОНФИГ ДЛЯ ВАЛИДАЦИИ ПОПАПОВ:---------------------------------------------------
+
+const validationPopupsConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  fieldsetSelector: '.popup__form-set',
+  submitButtonSelector: '.popup__submit',
+  inactiveButtonClass: 'popup__submit_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__input-error_visible'
+};
+
+//----------------------------
+
+//КОНСТАНТЫ: --------------------------
+
 const elementsContainer = document.querySelector('.elements__list');
 
 
@@ -53,7 +69,7 @@ const addButton = document.querySelector('.profile__add-button');
 
 const elementTemplate = document.querySelector('#element-template').content;
 
-
+// ----------------------------
 
 //ФУНКЦИИ: ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -268,20 +284,6 @@ elementsContainer.addEventListener('click', removeElement);
 
 // -----------------------
 
-
-//УСТАНАВЛИВАЕМ КОНФИГ:---------------------------------------------------
-
-const validationPopupsConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  fieldsetSelector: '.popup__form-set',
-  submitButtonSelector: '.popup__submit',
-  inactiveButtonClass: 'popup__submit_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__input-error_visible'
-};
-
-//----------------------------
 
 
 //ВЫПОЛНЯЕТСЯ:
