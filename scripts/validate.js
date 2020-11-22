@@ -81,21 +81,3 @@ const enableValidation = (config) => {
 // ----------------------------------------------
 
 
-//УСТАНАВЛИВАЕМ КОНФИГ:---------------------------------------------------
-//(ЭТО МОЖНО ПЕРЕНЕСТИ В index.js)
-
-const validationPopupsConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  fieldsetSelector: '.popup__form-set',
-  submitButtonSelector: '.popup__submit',
-  inactiveButtonClass: 'popup__submit_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__input-error_visible'
-};
-
-
-//ВЫПОЛНЯЕТСЯ:
-//(ЭТО МОЖНО ПЕРЕНЕСТИ В index.js)
-
-enableValidation(validationPopupsConfig);
