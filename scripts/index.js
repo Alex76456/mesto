@@ -1,3 +1,5 @@
+//МАССИВ ДАННЫХ: -------------
+
 const initialCards = [{
     name: 'Архыз',
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
@@ -23,6 +25,8 @@ const initialCards = [{
     link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
   }
 ];
+
+// ------------------------------
 
 //УСТАНАВЛИВАЕМ КОНФИГ ДЛЯ ВАЛИДАЦИИ ПОПАПОВ:---------------------------------------------------
 
@@ -154,8 +158,8 @@ const setHotKeyEsc = (event) => {
 };
 
 
-const setToggleEventListenerEsc = () => {
-  if (!document.removeEventListener('keydown', setHotKeyEsc)) {
+const setToggleEventListenerEsc = (popup) => {
+  if (popup.classList.contains('popup_opened')) {
     document.addEventListener('keydown', setHotKeyEsc);
   } else {
     document.removeEventListener('keydown', setHotKeyEsc);
@@ -172,7 +176,6 @@ const closeCurrentPopup = () => {
     setDefaultButton();
   }
   toggleShowPopup(currentPopup);
-  setToggleEventListenerEsc();
 };
 
 
@@ -193,6 +196,7 @@ const closePopupFromButton = (event) => {
 
 const toggleShowPopup = (popup) => {
   popup.classList.toggle('popup_opened');
+  setToggleEventListenerEsc(popup);
 };
 
 
@@ -200,14 +204,12 @@ function openEditPopup() {
   nameInput.value = name.textContent;
   jobInput.value = job.textContent;
   toggleShowPopup(popupEdit);
-  setToggleEventListenerEsc();
 }
 
 function openAddPopup() {
   placeInput.value = '';
   linkInput.value = '';
   toggleShowPopup(popupAdd);
-  setToggleEventListenerEsc();
 }
 
 
@@ -222,7 +224,6 @@ function openImagePopup(event) {
     captionImage.textContent = chosenCaption.textContent;
 
     toggleShowPopup(popupImage);
-    setToggleEventListenerEsc();
   }
 }
 // ------------------------------------------------------------------------------------------------------
@@ -290,10 +291,3 @@ elementsContainer.addEventListener('click', removeElement);
 
 renderElements();
 enableValidation(validationPopupsConfig);
-
-
-
-
-
-
-
