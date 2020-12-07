@@ -1,3 +1,6 @@
+import { Card } from './Card.js';
+import { FormValidator } from './FormValidator.js';
+
 //МАССИВ ДАННЫХ: -------------
 
 const initialCards = [{
@@ -51,7 +54,7 @@ const popupEdit = document.querySelector('.popup_type_edit');
 const formEdit = popupEdit.querySelector('.popup__form');
 const popupAdd = document.querySelector('.popup_type_add');
 const formAdd = popupAdd.querySelector('.popup__form');
-const popupImage = document.querySelector('.popup_type_image');
+
 
 const name = document.querySelector('.profile__title');
 const job = document.querySelector('.profile__subtitle');
@@ -63,15 +66,11 @@ const jobInput = popupEdit.querySelector('.popup__input_type_job');
 const placeInput = popupAdd.querySelector('.popup__input_type_place');
 const linkInput = popupAdd.querySelector('.popup__input_type_link');
 
-const placeImage = popupImage.querySelector('.popup__image');
-const captionImage = popupImage.querySelector('.popup__image-caption');
-
 
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
 
-const elementTemplate = document.querySelector('#element-template').content;
 
 // ----------------------------
 
@@ -79,32 +78,33 @@ const elementTemplate = document.querySelector('#element-template').content;
 
 //СОЗДАЕМ КАРТОЧКИ: ------------
 
-function createElement(placeValue, linkValue) {
-  const placeElement = elementTemplate.cloneNode(true);
-
-  const placeElementImage = placeElement.querySelector('.elements__image');
-  const placeElementCaption = placeElement.querySelector('.elements__caption');
-
-  placeElementImage.src = linkValue;
-  placeElementImage.alt = placeValue;
-  placeElementCaption.textContent = placeValue;
-  return placeElement;
-}
-
 function addPrepend(x) {
   elementsContainer.prepend(x);
 }
 
+
 function addNewElement() {
-  addPrepend(createElement(placeInput.value, linkInput.value));
-}
-
-
-function renderElements() {
-  for (let i = 0; i < initialCards.length; i++) {
-    addPrepend(createElement(initialCards[i].name, initialCards[i].link));
+  const inputsSum = {
+    name: placeInput.value,
+    link: linkInput.value
   }
+
+  const card = new Card(inputsSum, toggleShowPopup)
+  const cardElement = card.generateCard();
+  addPrepend(cardElement);
 }
+
+
+const renderElements = () => {
+  initialCards.forEach((item) => {
+    const card = new Card(item, toggleShowPopup)
+
+    const cardElement = card.generateCard();
+    addPrepend(cardElement);
+  });
+};
+
+
 //----------------------------------------------------------------------------------------
 
 
@@ -146,9 +146,6 @@ const setDefaultInputs = () => {
 //-----------------------------------------------------------------------------------------------
 
 
-
-
-
 //ЗАКРЫТЬ ПОПАП: -----------------------------------------------------------
 
 const setHotKeyEsc = (event) => {
@@ -186,10 +183,7 @@ const closePopupFromButton = (event) => {
 };
 
 
-
 //--------------------------------------------------------------
-
-
 
 
 //ОТКРЫТЬ ПОПАП: -----------------------------------------------------------------
@@ -212,39 +206,7 @@ function openAddPopup() {
   toggleShowPopup(popupAdd);
 }
 
-
-function openImagePopup(event) {
-  if (event.target.classList.contains('elements__image')) {
-
-    const chosenImage = event.target.parentElement.querySelector('.elements__image');
-    const chosenCaption = event.target.parentElement.querySelector('.elements__caption');
-
-    placeImage.src = chosenImage.src;
-    placeImage.alt = chosenImage.alt;
-    captionImage.textContent = chosenCaption.textContent;
-
-    toggleShowPopup(popupImage);
-  }
-}
 // ------------------------------------------------------------------------------------------------------
-
-
-
-//ЛАЙКИ И УДАЛЕНИЕ КАРТОЧЕК:------------
-const toggleShowLike = (event) => {
-  if (event.target.classList.contains('elements__caption-like'))
-    event.target.classList.toggle('elements__caption-like_color_black');
-};
-
-const removeElement = (event) => {
-  if (event.target.classList.contains('elements__delete-button')) {
-    const element = event.target.parentElement;
-    element.remove();
-  }
-};
-
-//---------------
-
 
 
 //SUBMITы ФОРМ: ----------------------------------------------------------------
@@ -276,18 +238,113 @@ formAdd.addEventListener('submit', submitAddForm);
 
 editButton.addEventListener('click', openEditPopup);
 addButton.addEventListener('click', openAddPopup);
-elementsContainer.addEventListener('click', openImagePopup);
 
 document.addEventListener('click', closePopupFromButton);
 
-elementsContainer.addEventListener('click', toggleShowLike);
-elementsContainer.addEventListener('click', removeElement);
 
 // -----------------------
-
-
 
 //ВЫПОЛНЯЕТСЯ:
 
 renderElements();
-enableValidation(validationPopupsConfig);
+
+const formEditValidator = new FormValidator(validationPopupsConfig, popupEdit);
+const formAddValidator = new FormValidator(validationPopupsConfig, popupAdd);
+
+formEditValidator.enableValidation();
+formAddValidator.enableValidation();
+
+
+
+
+
+
+
+
+
+
+
+
+//ЛИШНЕЕ:
+
+//const popupImage = document.querySelector('.popup_type_image');
+
+
+//const placeImage = popupImage.querySelector('.popup__image');
+//const captionImage = popupImage.querySelector('.popup__image-caption');
+//const elementTemplate = document.querySelector('#element-template').content;
+
+
+
+/*
+function createElement(placeValue, linkValue) {
+  const placeElement = elementTemplate.cloneNode(true);
+
+  const placeElementImage = placeElement.querySelector('.elements__image');
+  const placeElementCaption = placeElement.querySelector('.elements__caption');
+
+  placeElementImage.src = linkValue;
+  placeElementImage.alt = placeValue;
+  placeElementCaption.textContent = placeValue;
+  return placeElement;
+}
+*/
+
+
+
+/*
+function addNewElement() {
+  addPrepend(createElement(placeInput.value, linkInput.value));
+}*/
+
+
+
+/*
+function renderElements() {
+  for (let i = 0; i < initialCards.length; i++) {
+    addPrepend(createElement(initialCards[i].name, initialCards[i].link));
+  }
+}
+*/
+
+
+
+/*
+function openImagePopup(event) {
+  if (event.target.classList.contains('elements__image')) {
+
+    const chosenImage = event.target.parentElement.querySelector('.elements__image');
+    const chosenCaption = event.target.parentElement.querySelector('.elements__caption');
+
+    placeImage.src = chosenImage.src;
+    placeImage.alt = chosenImage.alt;
+    captionImage.textContent = chosenCaption.textContent;
+
+    toggleShowPopup(popupImage);
+  }
+}
+*/
+
+
+
+
+//ЛАЙКИ И УДАЛЕНИЕ КАРТОЧЕК:------------
+/*
+const toggleShowLike = (event) => {
+  if (event.target.classList.contains('elements__caption-like'))
+    event.target.classList.toggle('elements__caption-like_color_black');
+};
+
+const removeElement = (event) => {
+  if (event.target.classList.contains('elements__delete-button')) {
+    const element = event.target.parentElement;
+    element.remove();
+  }
+};*/
+
+//---------------
+
+
+//elementsContainer.addEventListener('click', toggleShowLike);
+//elementsContainer.addEventListener('click', removeElement);
+//elementsContainer.addEventListener('click', openImagePopup);
