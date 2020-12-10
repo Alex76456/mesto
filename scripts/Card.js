@@ -1,16 +1,13 @@
 export class Card {
-  constructor(item, toggleShowPopup) {
+  constructor(item, toggleShowPopup, cardSelector) {
     this._name = item.name;
     this._link = item.link;
     this._toggleShowPopup = toggleShowPopup;
+    this._cardSelector = cardSelector;
   }
 
   _getTemplate = () => {
-    const elementTemplate = document
-      .querySelector('#element-template')
-      .content
-      .querySelector('.elements__list-item')
-      .cloneNode(true);
+    const elementTemplate = this._cardSelector.cloneNode(true);
 
     return elementTemplate;
   }
@@ -24,6 +21,7 @@ export class Card {
 
   _removeElement = () => {
     this._element.remove();
+    this._element = null
   };
 
   _openImagePopup = () => {

@@ -1,33 +1,7 @@
+import { initialCards } from './data.js';
 import { Card } from './Card.js';
 import { FormValidator } from './FormValidator.js';
 
-//МАССИВ ДАННЫХ: -------------
-
-const initialCards = [{
-    name: 'Архыз',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg'
-  },
-  {
-    name: 'Челябинская область',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg'
-  },
-  {
-    name: 'Иваново',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg'
-  },
-  {
-    name: 'Камчатка',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg'
-  },
-  {
-    name: 'Холмогорский район',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg'
-  },
-  {
-    name: 'Байкал',
-    link: 'https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg'
-  }
-];
 
 // ------------------------------
 
@@ -70,6 +44,7 @@ const linkInput = popupAdd.querySelector('.popup__input_type_link');
 const editButton = document.querySelector('.profile__edit-button');
 const addButton = document.querySelector('.profile__add-button');
 
+const standartCard = document.querySelector('#element-template').content.querySelector('.elements__list-item');
 
 
 // ----------------------------
@@ -78,8 +53,12 @@ const addButton = document.querySelector('.profile__add-button');
 
 //СОЗДАЕМ КАРТОЧКИ: ------------
 
-function addPrepend(x) {
-  elementsContainer.prepend(x);
+function addPrepend(elementToInsert) {
+  elementsContainer.prepend(elementToInsert);
+}
+
+function createCopyOfClassCard(item, functionToggleShowPopup, cardSelector) {
+  return new Card(item, functionToggleShowPopup, cardSelector);
 }
 
 
@@ -89,17 +68,15 @@ function addNewElement() {
     link: linkInput.value
   }
 
-  const card = new Card(inputsSum, toggleShowPopup)
-  const cardElement = card.generateCard();
+  const cardElement = createCopyOfClassCard(inputsSum, toggleShowPopup, standartCard).generateCard();
   addPrepend(cardElement);
 }
 
 
 const renderElements = () => {
   initialCards.forEach((item) => {
-    const card = new Card(item, toggleShowPopup)
 
-    const cardElement = card.generateCard();
+    const cardElement = createCopyOfClassCard(item, toggleShowPopup, standartCard).generateCard();
     addPrepend(cardElement);
   });
 };
@@ -107,36 +84,40 @@ const renderElements = () => {
 
 //----------------------------------------------------------------------------------------
 
+//НАЙТИ: -------------------------
+//открытый попап:
+
+const getIsOpenedPopup = () => {
+  return document.querySelector('.popup_opened');
+};
+
+//кнопку сабмита в открытом попапе: 
+const getСurrentSubmitButton = () => {
+  return getIsOpenedPopup().querySelector('.popup__submit');
+};
+
+//инпуты в открытом попапе: 
+const getСurrentInputs = () => {
+  return Array.from(getIsOpenedPopup().querySelectorAll('.popup__input'));
+};
+
+//---------------------------------
+
 
 
 //СДЕЛАТЬ ЭЛЕМЕНТЫ ПО ДЕФОЛТУ: ----------------------------------------------------------
 
 const setDefaultButton = () => {
-  const currentPopup = document.querySelector('.popup_opened');
-  const currentSubmitButton = currentPopup.querySelector('.popup__submit');
 
-  if (!currentSubmitButton.classList.contains('popup__submit_disabled')) {
-    currentSubmitButton.classList.add('popup__submit_disabled');
-    currentSubmitButton.disabled = true;
+  if (!getСurrentSubmitButton().classList.contains('popup__submit_disabled')) {
+    getСurrentSubmitButton().classList.add('popup__submit_disabled');
+    getСurrentSubmitButton().disabled = true;
   }
 };
 
-const setDefaultErrors = () => {
-  const currentPopup = document.querySelector('.popup_opened');
-  const currentErrors = Array.from(currentPopup.querySelectorAll('.popup__input-error'));
-
-  currentErrors.forEach(error => {
-    if (error.classList.contains('popup__input-error_visible')) {
-      error.classList.remove('popup__input-error_visible');
-    }
-  });
-};
-
 const setDefaultInputs = () => {
-  const currentPopup = document.querySelector('.popup_opened');
-  const currentInputs = Array.from(currentPopup.querySelectorAll('.popup__input'));
 
-  currentInputs.forEach(input => {
+  getСurrentInputs().forEach(input => {
     if (input.classList.contains('popup__input_type_error')) {
       input.classList.remove('popup__input_type_error');
     }
@@ -164,15 +145,15 @@ const setToggleEventListenerEsc = (popup) => {
 };
 
 
-const closeCurrentPopup = () => {
-  const currentPopup = document.querySelector('.popup_opened');
 
-  if (currentPopup.querySelector('.popup__submit')) {
+const closeCurrentPopup = () => {
+
+  if (getIsOpenedPopup().querySelector('.popup__submit')) {
     setDefaultInputs();
-    setDefaultErrors();
+    new FormValidator(validationPopupsConfig, getIsOpenedPopup()).setDefaultErrors();
     setDefaultButton();
   }
-  toggleShowPopup(currentPopup);
+  toggleShowPopup(getIsOpenedPopup());
 };
 
 
@@ -253,98 +234,3 @@ const formAddValidator = new FormValidator(validationPopupsConfig, popupAdd);
 
 formEditValidator.enableValidation();
 formAddValidator.enableValidation();
-
-
-
-
-
-
-
-
-
-
-
-
-//ЛИШНЕЕ:
-
-//const popupImage = document.querySelector('.popup_type_image');
-
-
-//const placeImage = popupImage.querySelector('.popup__image');
-//const captionImage = popupImage.querySelector('.popup__image-caption');
-//const elementTemplate = document.querySelector('#element-template').content;
-
-
-
-/*
-function createElement(placeValue, linkValue) {
-  const placeElement = elementTemplate.cloneNode(true);
-
-  const placeElementImage = placeElement.querySelector('.elements__image');
-  const placeElementCaption = placeElement.querySelector('.elements__caption');
-
-  placeElementImage.src = linkValue;
-  placeElementImage.alt = placeValue;
-  placeElementCaption.textContent = placeValue;
-  return placeElement;
-}
-*/
-
-
-
-/*
-function addNewElement() {
-  addPrepend(createElement(placeInput.value, linkInput.value));
-}*/
-
-
-
-/*
-function renderElements() {
-  for (let i = 0; i < initialCards.length; i++) {
-    addPrepend(createElement(initialCards[i].name, initialCards[i].link));
-  }
-}
-*/
-
-
-
-/*
-function openImagePopup(event) {
-  if (event.target.classList.contains('elements__image')) {
-
-    const chosenImage = event.target.parentElement.querySelector('.elements__image');
-    const chosenCaption = event.target.parentElement.querySelector('.elements__caption');
-
-    placeImage.src = chosenImage.src;
-    placeImage.alt = chosenImage.alt;
-    captionImage.textContent = chosenCaption.textContent;
-
-    toggleShowPopup(popupImage);
-  }
-}
-*/
-
-
-
-
-//ЛАЙКИ И УДАЛЕНИЕ КАРТОЧЕК:------------
-/*
-const toggleShowLike = (event) => {
-  if (event.target.classList.contains('elements__caption-like'))
-    event.target.classList.toggle('elements__caption-like_color_black');
-};
-
-const removeElement = (event) => {
-  if (event.target.classList.contains('elements__delete-button')) {
-    const element = event.target.parentElement;
-    element.remove();
-  }
-};*/
-
-//---------------
-
-
-//elementsContainer.addEventListener('click', toggleShowLike);
-//elementsContainer.addEventListener('click', removeElement);
-//elementsContainer.addEventListener('click', openImagePopup);
