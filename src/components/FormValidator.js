@@ -85,11 +85,30 @@ export class FormValidator {
     const currentErrors = Array.from(this._validatingForm.querySelectorAll('.popup__input-error'));
 
     currentErrors.forEach(error => {
-      if (error.classList.contains('popup__input-error_visible')) {
-        error.classList.remove('popup__input-error_visible');
+      if (error.classList.contains(this._errorClass)) {
+        error.classList.remove(this._errorClass);
       }
     });
   };
+
+
+  setDefaultButton = () => {
+    if (!this._buttonElement.classList.contains(this._inactiveButtonClass)) {
+      this._buttonElement.classList.add(this._inactiveButtonClass);
+      this._buttonElement.disabled = true;
+    }
+  };
+
+  setDefaultInputs = () => {
+    const currentInputs = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
+
+    currentInputs.forEach(input => {
+      if (input.classList.contains(this._inputErrorClass)) {
+        input.classList.remove(this._inputErrorClass);
+      }
+    });
+  };
+
 
   //---------------------
 
