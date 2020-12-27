@@ -6,24 +6,24 @@ export class Card {
     this._cardSelector = cardSelector;
   }
 
-  _getTemplate = () => {
+  _getTemplate() {
     const elementTemplate = this._cardSelector.cloneNode(true);
     return elementTemplate;
   }
 
 
-  _toggleShowLike = () => {
+  _toggleShowLike() {
     this._element.querySelector('.elements__caption-like').classList.toggle('elements__caption-like_color_black');
   };
 
 
-  _removeElement = () => {
+  _removeElement() {
     this._element.remove();
     this._element = null
   };
 
 
-  _setEventListeners = () => {
+  _setEventListeners() {
     this._element.querySelector('.elements__caption-like').addEventListener('click', () => {
       this._toggleShowLike();
     });
@@ -38,7 +38,7 @@ export class Card {
   }
 
 
-  generateCard = () => {
+  generateCard() {
     this._element = this._getTemplate();
     this._setEventListeners();
 
