@@ -2,6 +2,7 @@ import { initialCards } from '../components/data.js';
 import { Card } from '../components/Card.js';
 import { FormValidator } from '../components/FormValidator.js';
 import Section from '../components/Section.js';
+import UserInfo from '../components/UserInfo.js';
 
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
@@ -9,10 +10,8 @@ import {
   validationPopupsConfig,
   elementsContainer,
   popupEdit,
-  formEdit,
   popupAdd,
   popupImage,
-  formAdd,
   name,
   job,
   nameInput,
@@ -27,101 +26,97 @@ import {
 const formEditValidator = new FormValidator(validationPopupsConfig, popupEdit);
 const formAddValidator = new FormValidator(validationPopupsConfig, popupAdd);
 
+
+//СОЗДАЕМ ЮЗЕРА: -----------------------
+
+const user = new UserInfo(name, job)
+
 //СОЗДАЕМ КАРТОЧКИ: ----------------------------------------------------
 
-function handleCardClick(element) {
-  imagePopup.openPopup(element);
+function createCard({ data, handleCardClick }, cardSelector) {
+  const card = new Card({ data, handleCardClick }, cardSelector);
+  return card;
 }
-
-
-function createCardElement(item, functionToggleShowPopup, cardSelector) {
-  return new Card(item, functionToggleShowPopup, cardSelector).generateCard();
-}
-
 
 const cardList = new Section({
-    data: initialCards,
-    renderer: (item) => {
-      const cardElement = createCardElement(item, handleCardClick, standartCard);
+  data: initialCards,
+  renderer: (item) => {
+    const card = createCard({
+      data: item,
+      handleCardClick: (element) => {
+        imagePopup.openPopup(element);
+      }
+    }, standartCard);
 
-      cardList.addItem(cardElement);
-    }
-  },
-  elementsContainer
-);
+    cardList.addItem(card.generateCard());
+  }
+}, elementsContainer);
 
-function addNewElement() {
+
+function addNewCard() {
   const inputsSum = {
     name: placeInput.value,
     link: linkInput.value
   }
-  const cardElement = createCardElement(inputsSum, handleCardClick, standartCard);
-  cardList.addItem(cardElement);
+  const card = createCard({
+    data: inputsSum,
+    handleCardClick: (element) => {
+      imagePopup.openPopup(element);
+    }
+  }, standartCard);
+  cardList.addItem(card.generateCard());
 }
 
 //----------------------------------------------------------------------------------------
 
 
-const editPopup = new PopupWithForm(popupEdit, submitEditForm);
-editPopup.setEventListeners();
-
-const addPopup = new PopupWithForm(popupAdd, submitAddForm);
-addPopup.setEventListeners();
-
-const imagePopup = new PopupWithImage(popupImage);
-imagePopup.setEventListeners();
 
 
-function openEditPopup() {
-  nameInput.value = name.textContent;
-  jobInput.value = job.textContent;
-
-  formEditValidator.setDefaultErrors();
-  formEditValidator.setDefaultInputs();
-  formEditValidator.setDefaultButton();
-
-  editPopup.openPopup();
-}
+//КОЛБЕКИ ДЛЯ ПОПАПОВ------------------------------
 
 function openAddPopup() {
   placeInput.value = '';
   linkInput.value = '';
 
-  formAddValidator.setDefaultErrors();
-  formAddValidator.setDefaultInputs();
-  formAddValidator.setDefaultButton();
+  formAddValidator.resetAll();
+}
 
-  addPopup.openPopup();
+function openEditPopup() {
+  nameInput.value = user.getUserInfo().name;
+  jobInput.value = user.getUserInfo().job;
+
+  formEditValidator.resetAll();
 }
 
 //SUBMITы ФОРМ: ----------------------------------------------------------------
 
 function submitEditForm() {
-  name.textContent = nameInput.value;
-  job.textContent = jobInput.value;
+  user.setUserInfo(nameInput.value, jobInput.value)
 
   formEditValidator.setDefaultButton();
-
   editPopup.closePopup();
 }
 
 function submitAddForm() {
-  addNewElement();
-
+  addNewCard();
   formAddValidator.setDefaultButton();
-
   addPopup.closePopup();
 }
 
-// -----------------------------------------------------------
+
+//СОЗДАЕМ ЭКЗЕМПЛЯРЫ ПОПАПОВ, ПРИМЕНЯЯ КОЛБЕКИ:
+
+const imagePopup = new PopupWithImage(popupImage);
+
+const addPopup = new PopupWithForm(popupAdd, submitAddForm, openAddPopup);
+
+const editPopup = new PopupWithForm(popupEdit, submitEditForm, openEditPopup);
 
 
 //СЛУШАТЕЛИ: ---------
+addButton.addEventListener('click', () => { addPopup.openPopup(); });
+editButton.addEventListener('click', () => { editPopup.openPopup(); });
 
-editButton.addEventListener('click', openEditPopup);
-addButton.addEventListener('click', openAddPopup);
-
-// -----------------------
 
 //ВЫПОЛНЯЕТСЯ:
 

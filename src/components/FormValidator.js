@@ -91,7 +91,6 @@ export class FormValidator {
     });
   };
 
-
   setDefaultButton = () => {
     if (!this._buttonElement.classList.contains(this._inactiveButtonClass)) {
       this._buttonElement.classList.add(this._inactiveButtonClass);
@@ -109,6 +108,11 @@ export class FormValidator {
     });
   };
 
+  resetAll = () => {
+    this.setDefaultErrors();
+    this.setDefaultInputs();
+    this.setDefaultButton();
+  }
 
   //---------------------
 
