@@ -78,6 +78,7 @@ function openEditPopup() {
 
   formEditValidator.setDefaultErrors();
   formEditValidator.setDefaultInputs();
+  formEditValidator.setDefaultButton();
 
   editPopup.openPopup();
 }
@@ -88,6 +89,7 @@ function openAddPopup() {
 
   formAddValidator.setDefaultErrors();
   formAddValidator.setDefaultInputs();
+  formAddValidator.setDefaultButton();
 
   addPopup.openPopup();
 }
