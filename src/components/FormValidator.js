@@ -13,14 +13,14 @@ export class FormValidator {
 
   //ПОКАЗАТЬ ИЛИ СКРЫТЬ ОШИБКИ В ЗАВИСИМОСТИ ОТ ВАЛИДНОСТИ ФОРМЫ: -----------------------------------------------------------
 
-  _showInputError = (inputElement, errorMessage) => {
+  _showInputError(inputElement, errorMessage) {
     const errorElement = this._validatingForm.querySelector(`#${inputElement.id}-error`);
     inputElement.classList.add(this._inputErrorClass);
     errorElement.textContent = errorMessage;
     errorElement.classList.add(this._errorClass);
   };
 
-  _hideInputError = (inputElement) => {
+  _hideInputError(inputElement) {
     const errorElement = this._validatingForm.querySelector(`#${inputElement.id}-error`);
     inputElement.classList.remove(this._inputErrorClass);
     errorElement.classList.remove(this._errorClass);
@@ -28,7 +28,7 @@ export class FormValidator {
   };
 
 
-  _checkInputValidity = (inputElement) => {
+  _checkInputValidity(inputElement) {
     if (inputElement.validity.valid) {
       this._hideInputError(inputElement);
     } else {
@@ -41,13 +41,13 @@ export class FormValidator {
 
   //ПЕРЕКЛЮЧАТЕЛЬ АКТИВНОСТИ КНОПКИ САБМИТА В ЗАВИСИМОСТИ НАЛИЧИЯ ХЯТЯБЫ ОДНОГО НЕВАЛИДНОГО ИНПУТА: -------------
 
-  _hasInvalidInput = () => {
+  _hasInvalidInput() {
     return this._inputList.some((inputElement) => {
       return !inputElement.validity.valid;
     });
   };
 
-  _toggleButtonState = () => {
+  _toggleButtonState() {
     if (this._hasInvalidInput(this._inputList)) {
       this._buttonElement.classList.add(this._inactiveButtonClass);
       this._buttonElement.disabled = true;
@@ -64,7 +64,7 @@ export class FormValidator {
 
   //ФУНКЦИИ УСТАНОВКИ СЛУШАТЕЛЕЙ НА ДОКУМЕНТ ЗАТЕМ И НА ФОРМЫ: -----------------------------
 
-  _setEventListeners = () => {
+  _setEventListeners() {
     this._inputList = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
 
     this._buttonElement = this._validatingForm.querySelector(this._submitButtonSelector);
@@ -81,20 +81,43 @@ export class FormValidator {
 
   //СБРОС ОШИБОК:------------------
 
-  setDefaultErrors = () => {
+  setDefaultErrors() {
     const currentErrors = Array.from(this._validatingForm.querySelectorAll('.popup__input-error'));
 
     currentErrors.forEach(error => {
-      if (error.classList.contains('popup__input-error_visible')) {
-        error.classList.remove('popup__input-error_visible');
+      if (error.classList.contains(this._errorClass)) {
+        error.classList.remove(this._errorClass);
       }
     });
   };
 
+  setDefaultButton() {
+    if (!this._buttonElement.classList.contains(this._inactiveButtonClass)) {
+      this._buttonElement.classList.add(this._inactiveButtonClass);
+      this._buttonElement.disabled = true;
+    }
+  };
+
+  setDefaultInputs() {
+    const currentInputs = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
+
+    currentInputs.forEach(input => {
+      if (input.classList.contains(this._inputErrorClass)) {
+        input.classList.remove(this._inputErrorClass);
+      }
+    });
+  };
+
+  resetAll() {
+    this.setDefaultErrors();
+    this.setDefaultInputs();
+    this.setDefaultButton();
+  }
+
   //---------------------
 
 
-  enableValidation = () => {
+  enableValidation() {
     this._validatingForm.addEventListener('submit', (evt) => {
       evt.preventDefault();
     });
