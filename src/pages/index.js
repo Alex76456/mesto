@@ -44,8 +44,8 @@ const cardList = new Section({
   renderer: (item) => {
     const card = createCard({
       data: item,
-      handleCardClick: (element) => {
-        imagePopup.openPopup(element);
+      handleCardClick: (name, link) => {
+        imagePopup.openPopup(name, link);
       }
     }, standartCard);
 
@@ -61,8 +61,8 @@ function addNewCard() {
   }
   const card = createCard({
     data: inputsSum,
-    handleCardClick: (element) => {
-      imagePopup.openPopup(element);
+    handleCardClick: (name, link) => {
+      imagePopup.openPopup(name, link);
     }
   }, standartCard);
   cardList.addItem(card.generateCard());
@@ -108,9 +108,7 @@ function submitAddForm() {
 //СОЗДАЕМ ЭКЗЕМПЛЯРЫ ПОПАПОВ, ПРИМЕНЯЯ КОЛБЕКИ:
 
 const imagePopup = new PopupWithImage(popupImage);
-
 const addPopup = new PopupWithForm(popupAdd, submitAddForm, openAddPopup);
-
 const editPopup = new PopupWithForm(popupEdit, submitEditForm, openEditPopup);
 
 
