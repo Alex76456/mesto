@@ -7,8 +7,10 @@ export class FormValidator {
     this._inactiveButtonClass = validationPopupsConfig.inactiveButtonClass;
     this._inputErrorClass = validationPopupsConfig.inputErrorClass;
     this._errorClass = validationPopupsConfig.errorClass;
-
     this._validatingForm = validatingForm;
+    this._inputList = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
+
+
   }
 
   //ПОКАЗАТЬ ИЛИ СКРЫТЬ ОШИБКИ В ЗАВИСИМОСТИ ОТ ВАЛИДНОСТИ ФОРМЫ: -----------------------------------------------------------
@@ -48,7 +50,7 @@ export class FormValidator {
   };
 
   _toggleButtonState() {
-    if (this._hasInvalidInput(this._inputList)) {
+    if (this._hasInvalidInput()) {
       this._buttonElement.classList.add(this._inactiveButtonClass);
       this._buttonElement.disabled = true;
     } else {
@@ -60,16 +62,11 @@ export class FormValidator {
   //-----------------------------------------------------------
 
 
-
-
   //ФУНКЦИИ УСТАНОВКИ СЛУШАТЕЛЕЙ НА ДОКУМЕНТ ЗАТЕМ И НА ФОРМЫ: -----------------------------
 
   _setEventListeners() {
-    this._inputList = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
-
     this._buttonElement = this._validatingForm.querySelector(this._submitButtonSelector);
     this._toggleButtonState();
-
 
     this._inputList.forEach((inputElement) => {
       inputElement.addEventListener('input', () => {
@@ -79,17 +76,7 @@ export class FormValidator {
     });
   };
 
-  //СБРОС ОШИБОК:------------------
-
-  setDefaultErrors() {
-    const currentErrors = Array.from(this._validatingForm.querySelectorAll('.popup__input-error'));
-
-    currentErrors.forEach(error => {
-      if (error.classList.contains(this._errorClass)) {
-        error.classList.remove(this._errorClass);
-      }
-    });
-  };
+  //СБРОС ОШИБОК:--------------------------------------------------------------------
 
   setDefaultButton() {
     if (!this._buttonElement.classList.contains(this._inactiveButtonClass)) {
@@ -99,22 +86,14 @@ export class FormValidator {
   };
 
   setDefaultInputs() {
-    const currentInputs = Array.from(this._validatingForm.querySelectorAll(this._inputSelector));
-
-    currentInputs.forEach(input => {
-      if (input.classList.contains(this._inputErrorClass)) {
-        input.classList.remove(this._inputErrorClass);
-      }
-    });
+    this._inputList.forEach(input => this._hideInputError(input));
   };
 
   resetAll() {
-    this.setDefaultErrors();
-    this.setDefaultInputs();
-    this.setDefaultButton();
-  }
-
-  //---------------------
+      this.setDefaultInputs();
+      this.setDefaultButton();
+    }
+    //-----------------------------------
 
 
   enableValidation() {
