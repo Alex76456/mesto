@@ -119,6 +119,10 @@ editButton.addEventListener('click', () => { editPopup.openPopup(); });
 
 //ВЫПОЛНЯЕТСЯ:
 
+imagePopup.setEventListeners();
+addPopup.setEventListeners();
+editPopup.setEventListeners();
+
 cardList.renderItems();
 
 formEditValidator.enableValidation();
