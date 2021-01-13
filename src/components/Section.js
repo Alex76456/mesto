@@ -7,11 +7,21 @@ export default class Section {
   }
 
 
-  renderItems(renderedItems) {
-    renderedItems.forEach(item => this._renderer(item))
+
+  renderItems(renderedItems, insert) {
+    if (Array.isArray(renderedItems) === true) {
+      renderedItems.forEach(item => this._renderer(item, insert))
+    } else {
+      this._renderer(renderedItems, insert);
+    }
   }
 
-  addItem(element) {
-    this._container.prepend(element);
+
+  addItem(element, isAppend) {
+    if (isAppend === true) {
+      this._container.append(element);
+    } else {
+      this._container.prepend(element);
+    }
   }
 }

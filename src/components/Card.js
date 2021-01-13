@@ -1,8 +1,12 @@
 export class Card {
-  constructor({ data, handleCardClick }, cardSelector) {
+  constructor({ data, handleCardClick, handleDeleteClick }, cardSelector) {
     this._name = data.name;
     this._link = data.link;
+    this._id = data._id;
+
     this._handleCardClick = handleCardClick;
+    this._handleDeleteClick = handleDeleteClick;
+
     this._cardSelector = cardSelector;
     this._element = this._getTemplate();
     this._deleteButton = this._element.querySelector('.elements__delete-button');
@@ -20,8 +24,9 @@ export class Card {
 
 
   _removeElement() {
-    this._element.remove();
-    this._element = null
+    this._handleDeleteClick(this._id, this._element);
+    //this._element.remove();
+    //this._element = null
   };
 
 

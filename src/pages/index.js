@@ -7,6 +7,7 @@ import UserInfo from '../components/UserInfo.js';
 
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
+import PopupWithConfirm from '../components/PopupWithConfirm.js';
 import {
   validationPopupsConfig,
   elementsContainer,
@@ -14,6 +15,7 @@ import {
   popupAdd,
   popupImage,
   popupAvatar,
+  popupConfirm,
   name,
   job,
   avatar,
@@ -29,11 +31,14 @@ import {
   cardFromOtherUsers
 } from '../utils/constants.js';
 
+
+//СОЗДАЕМ ВАЛИДАЦИЮ ДЛЯ ФОРМ:---------
+
 const formEditValidator = new FormValidator(validationPopupsConfig, popupEdit);
 const formAddValidator = new FormValidator(validationPopupsConfig, popupAdd);
 const formAvatarValidator = new FormValidator(validationPopupsConfig, popupAvatar);
 
-const user = new UserInfo(name, job, avatar)
+//----------------
 
 const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-19',
@@ -45,58 +50,70 @@ const api = new Api({
 
 
 
+
+
+//СОЗДАЕМ ПУСТОГО ЮЗЕРА: --------
+
+const user = new UserInfo(name, job, avatar)
+
+
 //ЗАГРУЖАЕМ ЮЗЕРА С СЕРВЕРА: -----------------------
 
-
-Promise.resolve(api.getUser())
+api.getUser()
   .then((data) => {
-    user.setUserInfo(data.name, data.about, data.avatar);
+    user.setUserInfo(data.name, data.about, data.avatar, data._id);
     avatarImage.src = data.avatar;
     avatarImage.alt = data.name;
-
+  })
+  .catch((err) => {
+    console.error(err);
   });
 
 
 //СОЗДАЕМ КАРТОЧКИ: ----------------------------------------------------
 
-function createCard({ data, handleCardClick }, cardSelector) {
-  const card = new Card({ data, handleCardClick }, cardSelector);
+function createCard({ data, handleCardClick, handleDeleteClick }, cardSelector) {
+  const card = new Card({ data, handleCardClick, handleDeleteClick }, cardSelector);
   return card;
 }
 
+
 const cardList = new Section({
-  renderer: (item) => {
-    if (item.owner.__id === 'a92a3a24f68ddeeeed65bc22') {
-      const card = createCard({
-        data: item,
-        handleCardClick: (name, link) => {
-          imagePopup.openPopup(name, link);
-        }
-      }, standartCard);
+  renderer: (item, insert) => {
 
-      cardList.addItem(card.generateCard());
+    let typeOfCard
+    if (item.owner._id === user.getUserInfo().id /*'a92a3a24f68ddeeeed65bc22'*/ ) {
+      typeOfCard = standartCard;
     } else {
-
-      const card = createCard({
-        data: item,
-        handleCardClick: (name, link) => {
-          imagePopup.openPopup(name, link);
-        }
-      }, cardFromOtherUsers);
-
-      cardList.addItem(card.generateCard());
+      typeOfCard = cardFromOtherUsers;
     }
 
+    const card = createCard({
+      data: item,
+      handleCardClick: (name, link) => {
+        imagePopup.openPopup(name, link);
+      },
+      handleDeleteClick: (cardId, element) => {
+        confirmPopup.openPopup(cardId, element)
+
+      }
+    }, typeOfCard);
+
+    cardList.addItem(card.generateCard(), insert);
   }
+
 }, elementsContainer);
 
 
 
 
-Promise.resolve(api.getInitialCards())
+api.getInitialCards()
   .then((data) => {
-
-    cardList.renderItems(data);
+    const isAppend = true;
+    cardList.renderItems(data, isAppend);
+  })
+  .catch((err) => {
+    console.error(err);
   });
 
 
@@ -161,30 +178,20 @@ function submitEditForm() {
 
 function submitAddForm() {
 
-  inLoading(true, popupAdd);
-
   api.setNewCard(placeInput.value, linkInput.value)
-    .then(res => {
+    .then((response) => {
 
-      const card = createCard({
-        data: res,
-        handleCardClick: (name, link) => {
-          imagePopup.openPopup(name, link);
-        }
-      }, standartCard);
-      cardList.addItem(card.generateCard());
+      const isAppend = false;
+      cardList.renderItems(response, isAppend);
 
     })
     .catch((err) => {
-      renderError(`Ошибка: ${err}`);
+      console.error(err);
     })
     .finally(() => {
-      inLoading(false, popupAdd);
       formAddValidator.setDefaultButton();
       addPopup.closePopup();
     })
-
-
 }
 
 
@@ -207,6 +214,21 @@ function submitAvatarForm() {
     })
 }
 
+function submitConfirmForm(cardId, element) {
+  api.deleteCard(cardId)
+    .then(() => {
+      confirmPopup.closePopup();
+      element.remove();
+      element = null
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+
+
+
 
 //СОЗДАЕМ ЭКЗЕМПЛЯРЫ ПОПАПОВ, ПРИМЕНЯЯ КОЛБЕКИ:
 
@@ -214,6 +236,7 @@ const imagePopup = new PopupWithImage(popupImage);
 const addPopup = new PopupWithForm(popupAdd, submitAddForm, openAddPopup);
 const editPopup = new PopupWithForm(popupEdit, submitEditForm, openEditPopup);
 const avatarPopup = new PopupWithForm(popupAvatar, submitAvatarForm, openAvatarPopup);
+const confirmPopup = new PopupWithConfirm(popupConfirm, submitConfirmForm);
 
 
 //СЛУШАТЕЛИ: ---------
@@ -228,6 +251,8 @@ imagePopup.setEventListeners();
 addPopup.setEventListeners();
 editPopup.setEventListeners();
 avatarPopup.setEventListeners();
+confirmPopup.setEventListeners();
+
 
 
 formEditValidator.enableValidation();

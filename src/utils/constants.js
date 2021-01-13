@@ -29,6 +29,7 @@ export const popupAvatar = document.querySelector('.popup_type_avatar');
 export const formAvatar = popupAvatar.querySelector('.popup__form');
 
 export const popupImage = document.querySelector('.popup_type_image');
+export const popupConfirm = document.querySelector('.popup_type_confirm');
 
 
 export const name = document.querySelector('.profile__title');
