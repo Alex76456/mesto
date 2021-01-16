@@ -39,6 +39,27 @@ export default class Api {
   }
 
 
+
+
+  setLikeCard(cardId) {
+    return fetch(`${this._url}/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: this._headers,
+      })
+      .then(this._getResponse);
+  }
+
+  deleteLikeCard(cardId) {
+    return fetch(`${this._url}/cards/likes/${cardId}`, {
+        method: 'DELETE',
+        headers: this._headers,
+      })
+      .then(this._getResponse);
+  }
+
+
+
+
   getUser() {
     return fetch(`${this._url}/users/me`, {
         headers: this._headers,

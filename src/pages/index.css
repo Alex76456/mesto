@@ -18,6 +18,8 @@
 @import url('../blocks/elements/__image/elements__image.css');
 @import url('../blocks/elements/__caption-space/elements__caption-space.css');
 @import url('../blocks/elements/__caption/elements__caption.css');
+@import url('../blocks/elements/__like-container/element__like-container.css');
+@import url('../blocks/elements/__likes-number/elements__likes-number.css');
 @import url('../blocks/elements/__caption-like/elements__caption-like.css');
 @import url('../blocks/elements/__delete-button/elements__delete-button.css');
 @import url('../blocks/elements/__caption-like/_color/elements__caption-like_color_black.css');

@@ -49,31 +49,31 @@ const api = new Api({
 });
 
 
-
-
-
 //СОЗДАЕМ ПУСТОГО ЮЗЕРА: --------
 
-const user = new UserInfo(name, job, avatar)
+const user = new UserInfo(name, job, avatarImage)
 
+//ЗАГРУЖАЕМ ЮЗЕРА И КАРТОЧКИ С СЕРВЕРА: -----------------------
 
-//ЗАГРУЖАЕМ ЮЗЕРА С СЕРВЕРА: -----------------------
+Promise.all([api.getUser(), api.getInitialCards()])
+  .then((results) => {
 
-api.getUser()
-  .then((data) => {
-    user.setUserInfo(data.name, data.about, data.avatar, data._id);
-    avatarImage.src = data.avatar;
-    avatarImage.alt = data.name;
+    user.setUserInfo(results[0]);
+
+    const isAppend = true;
+    cardList.renderItems(results[1], isAppend);
   })
   .catch((err) => {
     console.error(err);
   });
 
 
-//СОЗДАЕМ КАРТОЧКИ: ----------------------------------------------------
 
-function createCard({ data, handleCardClick, handleDeleteClick }, cardSelector) {
-  const card = new Card({ data, handleCardClick, handleDeleteClick }, cardSelector);
+
+//СОЗДАЕМ КАРТОЧКИ: -------------------------------------------------------------------
+
+function createCard({ data, handleCardClick, handleDeleteClick, handleLikeClick }, cardSelector, userId) {
+  const card = new Card({ data, handleCardClick, handleDeleteClick, handleLikeClick }, cardSelector, userId);
   return card;
 }
 
@@ -90,34 +90,45 @@ const cardList = new Section({
 
     const card = createCard({
       data: item,
+
       handleCardClick: (name, link) => {
         imagePopup.openPopup(name, link);
       },
       handleDeleteClick: (cardId, element) => {
         confirmPopup.openPopup(cardId, element)
 
-      }
-    }, typeOfCard);
+      },
+      handleLikeClick: (cardId, isLiked, setNewLikeStatus) => {
+        if (isLiked === false) {
+          api.setLikeCard(cardId)
+            .then(res => {
+              setNewLikeStatus(res);
+
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } else {
+          api.deleteLikeCard(cardId)
+            .then(res => {
+              setNewLikeStatus(res);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      },
+
+    }, typeOfCard, user.getUserInfo().id);
 
     cardList.addItem(card.generateCard(), insert);
   }
 
 }, elementsContainer);
 
-
-
-
-api.getInitialCards()
-  .then((data) => {
-    const isAppend = true;
-    cardList.renderItems(data, isAppend);
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-
 //----------------------------------------------------------------------------------------
+
+
 
 
 //КОЛБЕКИ ДЛЯ ПОПАПОВ------------------------------
@@ -140,13 +151,14 @@ function openAvatarPopup() {
   formAvatarValidator.resetAll();
 }
 
+//--------------------------------------------------
 
 
-//SUBMITы ФОРМ: ----------------------------------------------------------------
 
+
+//SUBMITы ФОРМ: -------------------------------------------------------------------------------------------------------------
 
 function inLoading(isLoading, popupSelector) {
-
   const submitButton = popupSelector.querySelector('.popup__submit');
 
   if (isLoading) {
@@ -158,12 +170,10 @@ function inLoading(isLoading, popupSelector) {
 
 
 function submitEditForm() {
-
   inLoading(true, popupEdit);
-
   api.setUser(nameInput.value, jobInput.value)
     .then(res => {
-      user.setUserInfo(res.name, res.about);
+      user.setUserInfo(res);
     })
     .catch((err) => {
       renderError(`Ошибка: ${err}`);
@@ -175,12 +185,9 @@ function submitEditForm() {
     })
 }
 
-
 function submitAddForm() {
-
   api.setNewCard(placeInput.value, linkInput.value)
     .then((response) => {
-
       const isAppend = false;
       cardList.renderItems(response, isAppend);
 
@@ -194,11 +201,8 @@ function submitAddForm() {
     })
 }
 
-
-
 function submitAvatarForm() {
   inLoading(true, popupAvatar);
-
   api.setUserAvatar(avatarLinkInput.value)
     .then((res) => {
       avatarImage.src = res.avatar;
@@ -226,7 +230,7 @@ function submitConfirmForm(cardId, element) {
     });
 }
 
-
+//---------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -245,7 +249,13 @@ editButton.addEventListener('click', () => { editPopup.openPopup(); });
 avatar.addEventListener('click', () => { avatarPopup.openPopup(); });
 
 
+
+
 //ВЫПОЛНЯЕТСЯ:
+
+
+
+
 
 imagePopup.setEventListeners();
 addPopup.setEventListeners();
