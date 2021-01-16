@@ -1,20 +1,26 @@
 import './index.css'
-import { initialCards } from '../components/data.js';
 import { Card } from '../components/Card.js';
 import { FormValidator } from '../components/FormValidator.js';
+import Api from '../components/Api.js';
 import Section from '../components/Section.js';
 import UserInfo from '../components/UserInfo.js';
 
 import PopupWithImage from '../components/PopupWithImage.js';
 import PopupWithForm from '../components/PopupWithForm.js';
+import PopupWithConfirm from '../components/PopupWithConfirm.js';
 import {
   validationPopupsConfig,
   elementsContainer,
   popupEdit,
   popupAdd,
   popupImage,
+  popupAvatar,
+  popupConfirm,
   name,
   job,
+  avatar,
+  avatarImage,
+  avatarLinkInput,
   nameInput,
   jobInput,
   placeInput,
@@ -22,51 +28,103 @@ import {
   editButton,
   addButton,
   standartCard,
+  cardFromOtherUsers
 } from '../utils/constants.js';
+
+
+//СОЗДАЕМ ВАЛИДАЦИЮ ДЛЯ ФОРМ:---------
 
 const formEditValidator = new FormValidator(validationPopupsConfig, popupEdit);
 const formAddValidator = new FormValidator(validationPopupsConfig, popupAdd);
+const formAvatarValidator = new FormValidator(validationPopupsConfig, popupAvatar);
+
+//----------------
+
+const api = new Api({
+  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-19',
+  headers: {
+    authorization: 'd4ad1f5c-6d3d-4923-9666-f0281ec3ce2e',
+    'Content-Type': 'application/json'
+  }
+});
 
 
-//СОЗДАЕМ ЮЗЕРА: -----------------------
+//СОЗДАЕМ ПУСТОГО ЮЗЕРА: --------
 
-const user = new UserInfo(name, job)
+const user = new UserInfo(name, job, avatarImage)
 
-//СОЗДАЕМ КАРТОЧКИ: ----------------------------------------------------
+//ЗАГРУЖАЕМ ЮЗЕРА И КАРТОЧКИ С СЕРВЕРА: -----------------------
 
-function createCard({ data, handleCardClick }, cardSelector) {
-  const card = new Card({ data, handleCardClick }, cardSelector);
+Promise.all([api.getUser(), api.getInitialCards()])
+  .then((results) => {
+
+    user.setUserInfo(results[0]);
+
+    const isAppend = true;
+    cardList.renderItems(results[1], isAppend);
+  })
+  .catch((err) => {
+    console.error(err);
+  });
+
+
+
+
+//СОЗДАЕМ КАРТОЧКИ: -------------------------------------------------------------------
+
+function createCard({ data, handleCardClick, handleDeleteClick, handleLikeClick }, cardSelector, userId) {
+  const card = new Card({ data, handleCardClick, handleDeleteClick, handleLikeClick }, cardSelector, userId);
   return card;
 }
 
+
 const cardList = new Section({
-  data: initialCards,
-  renderer: (item) => {
+  renderer: (item, insert) => {
+
+    let typeOfCard
+    if (item.owner._id === user.getUserInfo().id /*'a92a3a24f68ddeeeed65bc22'*/ ) {
+      typeOfCard = standartCard;
+    } else {
+      typeOfCard = cardFromOtherUsers;
+    }
+
     const card = createCard({
       data: item,
+
       handleCardClick: (name, link) => {
         imagePopup.openPopup(name, link);
-      }
-    }, standartCard);
+      },
+      handleDeleteClick: (cardId, element) => {
+        confirmPopup.openPopup(cardId, element)
 
-    cardList.addItem(card.generateCard());
+      },
+      handleLikeClick: (cardId, isLiked, setNewLikeStatus) => {
+        if (isLiked === false) {
+          api.setLikeCard(cardId)
+            .then(res => {
+              setNewLikeStatus(res);
+
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        } else {
+          api.deleteLikeCard(cardId)
+            .then(res => {
+              setNewLikeStatus(res);
+            })
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      },
+
+    }, typeOfCard, user.getUserInfo().id);
+
+    cardList.addItem(card.generateCard(), insert);
   }
+
 }, elementsContainer);
-
-
-function addNewCard() {
-  const inputsSum = {
-    name: placeInput.value,
-    link: linkInput.value
-  }
-  const card = createCard({
-    data: inputsSum,
-    handleCardClick: (name, link) => {
-      imagePopup.openPopup(name, link);
-    }
-  }, standartCard);
-  cardList.addItem(card.generateCard());
-}
 
 //----------------------------------------------------------------------------------------
 
@@ -89,20 +147,91 @@ function openEditPopup() {
   formEditValidator.resetAll();
 }
 
-//SUBMITы ФОРМ: ----------------------------------------------------------------
+function openAvatarPopup() {
+  formAvatarValidator.resetAll();
+}
+
+//--------------------------------------------------
+
+
+
+
+//SUBMITы ФОРМ: -------------------------------------------------------------------------------------------------------------
+
+function inLoading(isLoading, popupSelector) {
+  const submitButton = popupSelector.querySelector('.popup__submit');
+
+  if (isLoading) {
+    submitButton.textContent = 'Сохранение...'
+  } else {
+    submitButton.textContent = 'Сохранить'
+  }
+}
+
 
 function submitEditForm() {
-  user.setUserInfo(nameInput.value, jobInput.value)
-
-  formEditValidator.setDefaultButton();
-  editPopup.closePopup();
+  inLoading(true, popupEdit);
+  api.setUser(nameInput.value, jobInput.value)
+    .then(res => {
+      user.setUserInfo(res);
+    })
+    .catch((err) => {
+      renderError(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      inLoading(false, popupEdit);
+      formEditValidator.setDefaultButton();
+      editPopup.closePopup();
+    })
 }
 
 function submitAddForm() {
-  addNewCard();
-  formAddValidator.setDefaultButton();
-  addPopup.closePopup();
+  api.setNewCard(placeInput.value, linkInput.value)
+    .then((response) => {
+      const isAppend = false;
+      cardList.renderItems(response, isAppend);
+
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+    .finally(() => {
+      formAddValidator.setDefaultButton();
+      addPopup.closePopup();
+    })
 }
+
+function submitAvatarForm() {
+  inLoading(true, popupAvatar);
+  api.setUserAvatar(avatarLinkInput.value)
+    .then((res) => {
+      avatarImage.src = res.avatar;
+      avatarImage.alt = user.getUserInfo().name;
+    })
+    .catch((err) => {
+      renderError(`Ошибка: ${err}`);
+    })
+    .finally(() => {
+      inLoading(false, popupAvatar);
+      formAvatarValidator.setDefaultButton();
+      avatarPopup.closePopup();
+    })
+}
+
+function submitConfirmForm(cardId, element) {
+  api.deleteCard(cardId)
+    .then(() => {
+      confirmPopup.closePopup();
+      element.remove();
+      element = null
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+
 
 
 //СОЗДАЕМ ЭКЗЕМПЛЯРЫ ПОПАПОВ, ПРИМЕНЯЯ КОЛБЕКИ:
@@ -110,20 +239,32 @@ function submitAddForm() {
 const imagePopup = new PopupWithImage(popupImage);
 const addPopup = new PopupWithForm(popupAdd, submitAddForm, openAddPopup);
 const editPopup = new PopupWithForm(popupEdit, submitEditForm, openEditPopup);
+const avatarPopup = new PopupWithForm(popupAvatar, submitAvatarForm, openAvatarPopup);
+const confirmPopup = new PopupWithConfirm(popupConfirm, submitConfirmForm);
 
 
 //СЛУШАТЕЛИ: ---------
 addButton.addEventListener('click', () => { addPopup.openPopup(); });
 editButton.addEventListener('click', () => { editPopup.openPopup(); });
+avatar.addEventListener('click', () => { avatarPopup.openPopup(); });
+
+
 
 
 //ВЫПОЛНЯЕТСЯ:
 
+
+
+
+
 imagePopup.setEventListeners();
 addPopup.setEventListeners();
 editPopup.setEventListeners();
+avatarPopup.setEventListeners();
+confirmPopup.setEventListeners();
 
-cardList.renderItems();
+
 
 formEditValidator.enableValidation();
 formAddValidator.enableValidation();
+formAvatarValidator.enableValidation();
