@@ -4,6 +4,7 @@ export class Card {
     this._link = data.link;
     this._id = data._id;
     this._likes = data.likes;
+    this._ownerId = data.owner._id;
 
     this._handleCardClick = handleCardClick;
     this._handleDeleteClick = handleDeleteClick;
@@ -27,12 +28,17 @@ export class Card {
 
 
   _seekUserLike(arr) {
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i]._id === this._userId) {
-        return true;
-      }
-    }
-    return false;
+    return arr.some(item => item._id === this._userId);
+
+    /* 
+      запасной вариант, работает везде
+          for (var i = 0; i < arr.length; i++) {
+            if (arr[i]._id === this._userId) {
+              return true;
+            }
+          }
+          return false;
+     */
   }
 
   _renderUserLike(answer) {
@@ -57,7 +63,7 @@ export class Card {
   _setEventListeners() {
     if (this._deleteButton) {
       this._deleteButton.addEventListener('click', () => {
-        this._handleDeleteClick(this._id, this._element);
+        this._handleDeleteClick(this._id, () => { this._deleteCard() });
       });
     }
 
@@ -71,7 +77,19 @@ export class Card {
   }
 
 
+
+  _deleteCard() {
+    this._element.remove();
+    this._element = null
+  }
+
+
+
   generateCard() {
+    if (this._ownerId !== this._userId) {
+      this._deleteButton.remove();
+    }
+
     this._setEventListeners();
 
     const placeElementImage = this._element.querySelector('.elements__image');
@@ -79,6 +97,7 @@ export class Card {
     placeElementImage.src = this._link;
     placeElementImage.alt = this._name;
     this._element.querySelector('.elements__caption').textContent = this._name;
+
     this._likesNumber.textContent = this._likes.length;
     this._renderUserLike(this._seekUserLike(this._likes));
 

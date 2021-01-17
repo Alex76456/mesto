@@ -27,8 +27,7 @@ import {
   linkInput,
   editButton,
   addButton,
-  standartCard,
-  cardFromOtherUsers
+  standartCard
 } from '../utils/constants.js';
 
 
@@ -81,21 +80,14 @@ function createCard({ data, handleCardClick, handleDeleteClick, handleLikeClick 
 const cardList = new Section({
   renderer: (item, insert) => {
 
-    let typeOfCard
-    if (item.owner._id === user.getUserInfo().id /*'a92a3a24f68ddeeeed65bc22'*/ ) {
-      typeOfCard = standartCard;
-    } else {
-      typeOfCard = cardFromOtherUsers;
-    }
-
     const card = createCard({
       data: item,
 
       handleCardClick: (name, link) => {
         imagePopup.openPopup(name, link);
       },
-      handleDeleteClick: (cardId, element) => {
-        confirmPopup.openPopup(cardId, element)
+      handleDeleteClick: (cardId, deleteCard) => {
+        confirmPopup.openPopup(cardId, deleteCard)
 
       },
       handleLikeClick: (cardId, isLiked, setNewLikeStatus) => {
@@ -119,7 +111,7 @@ const cardList = new Section({
         }
       },
 
-    }, typeOfCard, user.getUserInfo().id);
+    }, standartCard, user.getUserInfo().id);
 
     cardList.addItem(card.generateCard(), insert);
   }
@@ -169,9 +161,9 @@ function inLoading(isLoading, popupSelector) {
 }
 
 
-function submitEditForm() {
+function submitEditForm(inputsValues) {
   inLoading(true, popupEdit);
-  api.setUser(nameInput.value, jobInput.value)
+  api.setUser(inputsValues)
     .then(res => {
       user.setUserInfo(res);
     })
@@ -185,8 +177,8 @@ function submitEditForm() {
     })
 }
 
-function submitAddForm() {
-  api.setNewCard(placeInput.value, linkInput.value)
+function submitAddForm(inputsValues) {
+  api.setNewCard(inputsValues)
     .then((response) => {
       const isAppend = false;
       cardList.renderItems(response, isAppend);
@@ -205,8 +197,7 @@ function submitAvatarForm() {
   inLoading(true, popupAvatar);
   api.setUserAvatar(avatarLinkInput.value)
     .then((res) => {
-      avatarImage.src = res.avatar;
-      avatarImage.alt = user.getUserInfo().name;
+      user.setUserAvatar(res.avatar)
     })
     .catch((err) => {
       renderError(`Ошибка: ${err}`);
@@ -218,12 +209,11 @@ function submitAvatarForm() {
     })
 }
 
-function submitConfirmForm(cardId, element) {
+function submitConfirmForm(cardId, deleteCard) {
   api.deleteCard(cardId)
     .then(() => {
       confirmPopup.closePopup();
-      element.remove();
-      element = null
+      deleteCard();
     })
     .catch((err) => {
       console.error(err);
@@ -231,7 +221,6 @@ function submitConfirmForm(cardId, element) {
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------
-
 
 
 //СОЗДАЕМ ЭКЗЕМПЛЯРЫ ПОПАПОВ, ПРИМЕНЯЯ КОЛБЕКИ:
@@ -249,21 +238,13 @@ editButton.addEventListener('click', () => { editPopup.openPopup(); });
 avatar.addEventListener('click', () => { avatarPopup.openPopup(); });
 
 
-
-
 //ВЫПОЛНЯЕТСЯ:
-
-
-
-
 
 imagePopup.setEventListeners();
 addPopup.setEventListeners();
 editPopup.setEventListeners();
 avatarPopup.setEventListeners();
 confirmPopup.setEventListeners();
-
-
 
 formEditValidator.enableValidation();
 formAddValidator.enableValidation();

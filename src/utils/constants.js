@@ -51,7 +51,6 @@ export const editButton = document.querySelector('.profile__edit-button');
 export const addButton = document.querySelector('.profile__add-button');
 
 export const standartCard = document.querySelector('#element-template').content.querySelector('.elements__list-item');
-export const cardFromOtherUsers = document.querySelector('#element-template').content.querySelector('.elements__list-item-other-users');
 
 
 // ----------------------------

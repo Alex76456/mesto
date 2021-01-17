@@ -8,19 +8,17 @@ export default class PopupWithConfirm extends Popup {
   }
 
 
-  openPopup(cardId, element) {
+  openPopup(cardId, deleteCard) {
     super.openPopup();
     this._id = cardId;
-    this._elementToDelete = element;
+    this._funcToDeleteCard = deleteCard;
   }
 
 
 
   _formSubmit(evt) {
     evt.preventDefault();
-    this._submitForm(this._id, this._elementToDelete);
-    //this._elementToDelete.remove();
-    //this._elementToDelete = null
+    this._submitForm(this._id, this._funcToDeleteCard);
   }
 
 
