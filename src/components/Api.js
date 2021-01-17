@@ -18,13 +18,13 @@ export default class Api {
       .then(this._getResponse);
   }
 
-  setNewCard(newCardName, newCardLink) {
+  setNewCard({ place, link }) {
     return fetch(`${this._url}/cards`, {
         method: 'POST',
         headers: this._headers,
         body: JSON.stringify({
-          name: newCardName,
-          link: newCardLink
+          name: place,
+          link: link
         })
       })
       .then(this._getResponse);
@@ -67,13 +67,13 @@ export default class Api {
       .then(this._getResponse);
   }
 
-  setUser(newName, newAbout) {
+  setUser({ title, subtitle }) {
     return fetch(`${this._url}/users/me`, {
         method: 'PATCH',
         headers: this._headers,
         body: JSON.stringify({
-          name: newName,
-          about: newAbout
+          name: title,
+          about: subtitle
         })
       })
       .then(this._getResponse);
